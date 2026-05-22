@@ -202,6 +202,14 @@ h1 {
   font-size: 20px;
 }
 
+.btn-overlay {
+  background: #f1b2b2;
+
+  &:hover {
+    background: #f87474;
+  }
+}
+
 .message.hidden {
   display: none;
 }
