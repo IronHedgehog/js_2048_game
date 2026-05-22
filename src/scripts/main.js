@@ -13,9 +13,12 @@ const gameScore = document.querySelector('.game-score');
 const bestScore = document.querySelector('.best-score');
 const winMessage = document.querySelector('.message-win');
 const loseMessage = document.querySelector('.message-lose');
+const boardWrapper = document.querySelector('.board-wrapper');
 
-start.addEventListener('click', (e) => {
+function startGame() {
   game.restart();
+
+  start.textContent = 'Restart';
 
   startMessage.classList.add('hidden');
   winMessage.classList.add('hidden');
@@ -26,6 +29,19 @@ start.addEventListener('click', (e) => {
   renderRows(state);
 
   gameScore.textContent = game.getScore();
+}
+
+start.addEventListener('click', (e) => {
+  startGame();
+});
+
+boardWrapper.addEventListener('click', (e) => {
+  const clickedRestart =
+    e.target.closest('.start') || e.target.closest('.btn-overlay');
+
+  if (clickedRestart) {
+    startGame();
+  }
 });
 
 function renderRows(state) {
