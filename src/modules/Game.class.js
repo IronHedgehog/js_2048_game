@@ -29,7 +29,6 @@ export default class Game {
    * initial state.
    */
   constructor(state = this.init, gameStatus = 'idle') {
-    // eslint-disable-next-line no-console
     this.state = state;
     this.gameStatus = gameStatus;
   }
@@ -75,6 +74,10 @@ export default class Game {
     return this.gameStatus;
   }
 
+  getBestScore() {
+    return this.bestScore;
+  }
+
   /**
    * Starts the game.
    */
@@ -86,8 +89,11 @@ export default class Game {
       [0, 0, 0, 0],
       [0, 0, 0, 0],
       [0, 0, 0, 0],
-      [0, 0, 2, 2],
+      [0, 0, 0, 0],
     ];
+
+    this.addRandomCell();
+    this.addRandomCell();
 
     return 'start game';
   }
@@ -96,7 +102,7 @@ export default class Game {
    * Resets the game.
    */
   restart() {
-    this.bestScore = this.score;
+    this.score = 0;
     this.start();
   }
 
@@ -144,6 +150,92 @@ export default class Game {
 
     this.state = isVertical ? this.transpose(workingState) : workingState;
 
-    return saveState !== this.state.toString();
+    const isChange = saveState !== this.state.toString();
+
+    if (isChange) {
+      this.addRandomCell();
+      this.updateGameStatus();
+
+      if (this.score > this.bestScore) {
+        this.bestScore = this.score;
+      }
+    }
+
+    return isChange;
+  }
+
+  addRandomCell() {
+    const emptyCells = [];
+
+    for (let i = 0; i < 4; i++) {
+      for (let j = 0; j < 4; j++) {
+        if (this.state[i][j] === 0) {
+          const emptyCellCoords = { i, j };
+
+          emptyCells.push(emptyCellCoords);
+        }
+      }
+    }
+
+    if (emptyCells.length === 0) {
+      return;
+    }
+
+    const randomCell = Math.floor(Math.random() * emptyCells.length);
+    const { i: row, j: column } = emptyCells[randomCell];
+
+    this.state[row][column] = Math.random() < 0.9 ? 2 : 4;
+  }
+
+  isWinGame() {
+    for (let r = 0; r < 4; r++) {
+      for (let c = 0; c < 4; c++) {
+        if (this.state[r][c] === 2048) {
+          return true;
+        }
+      }
+    }
+
+    return false;
+  }
+
+  isFreeCells() {
+    for (let r = 0; r < 4; r++) {
+      for (let c = 0; c < 4; c++) {
+        if (this.state[r][c] === 0) {
+          return true;
+        }
+      }
+    }
+
+    return false;
+  }
+
+  canMerge() {
+    for (let r = 0; r < 4; r++) {
+      for (let c = 0; c < 4; c++) {
+        if (c < 3 && this.state[r][c] === this.state[r][c + 1]) {
+          return true;
+        }
+
+        if (r < 3 && this.state[r][c] === this.state[r + 1][c]) {
+          return true;
+        }
+      }
+    }
+
+    return false;
+  }
+
+  updateGameStatus() {
+    if (this.isWinGame()) {
+      this.gameStatus = 'win';
+
+      return;
+    }
+
+    if (!this.isFreeCells() && !this.canMerge()) {
+      this.gameStatus = 'lose';
+    }
   }
 }

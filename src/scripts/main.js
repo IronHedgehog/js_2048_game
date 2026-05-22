@@ -9,21 +9,24 @@ const game = new Game();
 const gameField = document.querySelector('.game-field');
 const start = document.querySelector('.start');
 const startMessage = document.querySelector('.message-start');
-// const winMessage = document.querySelector('.message-win');
-// const loseMessage = document.querySelector('.message-lose');
+const gameScore = document.querySelector('.game-score');
+const bestScore = document.querySelector('.best-score');
+const winMessage = document.querySelector('.message-win');
+const loseMessage = document.querySelector('.message-lose');
 
 start.addEventListener('click', (e) => {
-  game.start();
+  game.restart();
+
   startMessage.classList.add('hidden');
+  winMessage.classList.add('hidden');
+  loseMessage.classList.add('hidden');
 
   const state = game.getState();
 
   renderRows(state);
+
+  gameScore.textContent = game.getScore();
 });
-// ArrowRight;
-// ArrowDown
-// ArrowDown;
-//  ArrowLeft
 
 function renderRows(state) {
   state.forEach((rows, i) => {
@@ -42,36 +45,40 @@ function renderRows(state) {
 }
 
 function handleInput(e) {
-  const gameStatus = game.getStatus();
-
-  if (gameStatus !== 'playing') {
+  if (game.getStatus() !== 'playing') {
     return;
   }
 
-  let isValidKey = true;
+  let didMove = false;
 
   switch (e.code) {
     case 'ArrowLeft':
-      game.moveLeft();
+      didMove = game.moveLeft();
       break;
     case 'ArrowRight':
-      game.moveRight();
+      didMove = game.moveRight();
       break;
     case 'ArrowUp':
-      game.moveUp();
+      didMove = game.moveUp();
       break;
     case 'ArrowDown':
-      game.moveDown();
+      didMove = game.moveDown();
       break;
-    default:
-      isValidKey = false;
   }
 
-  const gameState = game.getState();
-
-  if (isValidKey) {
+  if (didMove) {
     e.preventDefault();
-    renderRows(gameState);
+    renderRows(game.getState());
+    gameScore.textContent = game.getScore();
+    bestScore.textContent = game.getBestScore();
+
+    const currentStatus = game.getStatus();
+
+    if (currentStatus === 'win') {
+      winMessage.classList.remove('hidden');
+    } else if (currentStatus === 'lose') {
+      loseMessage.classList.remove('hidden');
+    }
   }
 }
 
