@@ -8,7 +8,6 @@ const game = new Game();
 // Write your code here
 const gameField = document.querySelector('.game-field');
 const start = document.querySelector('.start');
-const startMessage = document.querySelector('.message-start');
 const gameScore = document.querySelector('.game-score');
 const bestScore = document.querySelector('.best-score');
 const winMessage = document.querySelector('.message-win');
@@ -20,7 +19,6 @@ function startGame() {
 
   start.textContent = 'Restart';
 
-  startMessage.classList.add('hidden');
   winMessage.classList.add('hidden');
   loseMessage.classList.add('hidden');
 
@@ -29,20 +27,8 @@ function startGame() {
   renderRows(state);
 
   gameScore.textContent = game.getScore();
+  bestScore.textContent = game.getBestScore();
 }
-
-start.addEventListener('click', (e) => {
-  startGame();
-});
-
-boardWrapper.addEventListener('click', (e) => {
-  const clickedRestart =
-    e.target.closest('.start') || e.target.closest('.btn-overlay');
-
-  if (clickedRestart) {
-    startGame();
-  }
-});
 
 function renderRows(state) {
   state.forEach((rows, i) => {
@@ -98,4 +84,16 @@ function handleInput(e) {
   }
 }
 
+start.addEventListener('click', startGame);
+
+boardWrapper.addEventListener('click', (e) => {
+  const clickedRestart = e.target.closest('.btn-overlay');
+
+  if (clickedRestart) {
+    startGame();
+  }
+});
+
 document.addEventListener('keydown', handleInput);
+
+document.addEventListener('DOMContentLoaded', startGame);

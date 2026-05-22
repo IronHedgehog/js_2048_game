@@ -31,6 +31,12 @@ export default class Game {
   constructor(state = this.init, gameStatus = 'idle') {
     this.state = state;
     this.gameStatus = gameStatus;
+
+    const savedBest = localStorage.getItem('bestScore');
+
+    if (savedBest) {
+      this.bestScore = parseInt(savedBest);
+    }
   }
 
   moveLeft() {
@@ -158,6 +164,7 @@ export default class Game {
 
       if (this.score > this.bestScore) {
         this.bestScore = this.score;
+        localStorage.setItem('bestScore', this.bestScore);
       }
     }
 
