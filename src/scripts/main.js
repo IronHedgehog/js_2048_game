@@ -10,6 +10,7 @@ const gameField = document.querySelector('.game-field');
 const start = document.querySelector('.start');
 const gameScore = document.querySelector('.game-score');
 const bestScore = document.querySelector('.best-score');
+const startMessage = document.querySelector('.message-start');
 const winMessage = document.querySelector('.message-win');
 const loseMessage = document.querySelector('.message-lose');
 const boardWrapper = document.querySelector('.board-wrapper');
@@ -20,6 +21,7 @@ function startGame() {
   start.textContent = 'Restart';
 
   winMessage.classList.add('hidden');
+  startMessage.classList.add('hidden');
   loseMessage.classList.add('hidden');
 
   const state = game.getState();
@@ -95,5 +97,3 @@ boardWrapper.addEventListener('click', (e) => {
 });
 
 document.addEventListener('keydown', handleInput);
-
-document.addEventListener('DOMContentLoaded', startGame);
